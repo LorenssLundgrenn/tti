@@ -46,7 +46,7 @@ if __name__ == "__main__":
                 defaultPath = False
 
         if not asText:
-            file = open("./"+sys.argv[1], "rt")
+            file = open(sys.argv[1], "rt")
             article = file.read().split('\n')
             file.close()
             if defaultPath:
