@@ -8,6 +8,7 @@ required:
 optional (no specific arg order beyond first arg):
     as_text - treats arg1 as plain text data instead of a file path, \n character is supported
     show - opens image after program process
+    transparent - transparent background
     size=<int> - set font size
     font=<string> - set font
     path=<string> - set output image path
