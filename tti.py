@@ -1,6 +1,6 @@
 from PIL import Image, ImageFont, ImageDraw
 
-def tti(article, font, fontSize):
+def tti(article, font, fontSize, transparency=False):
     textHeight = font.getsize(article[0])[1]
     articleHeight = len(article) * textHeight
     articleWidth = 0
@@ -9,7 +9,7 @@ def tti(article, font, fontSize):
         if textWidth > articleWidth:
             articleWidth = textWidth
 
-    image = Image.new("RGB", (articleWidth, articleHeight))
+    image = Image.new("RGB" if not transparency else "RGBA", (articleWidth, articleHeight))
     draw = ImageDraw.Draw(image)
 
     for i in range(len(article)):
@@ -26,6 +26,7 @@ if __name__ == "__main__":
     else:
         showImage = False
         asText = False
+        transparency = False
         fontSize = 14
         fontFile = "CONSOLA.TTF"
         path = "tti.png"
@@ -35,6 +36,8 @@ if __name__ == "__main__":
                 showImage = True
             elif argument == "as_text":
                 asText = True
+            elif argument == "transparent":
+                transparency = True
 
             argumentParts = argument.lower().split('=')
             if argumentParts[0] == "size":
@@ -59,7 +62,7 @@ if __name__ == "__main__":
         else:
             font = ImageFont.truetype("./fonts/"+fontFile, fontSize)
 
-        image = tti(article, font, fontSize)
+        image = tti(article, font, fontSize, transparency)
         image.save(path)
         if showImage:
             image.show()
