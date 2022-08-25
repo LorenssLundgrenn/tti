@@ -20,6 +20,7 @@ def tti(article, font, fontSize, transparency=False):
 if __name__ == "__main__":
     import sys
     import os
+    import json
 
     if sys.argv[1] == "fonts":
         print(os.listdir("./fonts"))
@@ -31,15 +32,15 @@ if __name__ == "__main__":
         fontFile = "CONSOLA.TTF"
         path = "tti.png"
         defaultPath = True
-        for argument in sys.argv:
-            if argument == "show":
+        for i in range(len(sys.argv)):
+            if sys.argv[i] == "show":
                 showImage = True
-            elif argument == "as_text":
+            elif sys.argv[i] == "as_text":
                 asText = True
-            elif argument == "transparent":
+            elif sys.argv[i] == "transparent":
                 transparency = True
 
-            argumentParts = argument.lower().split('=')
+            argumentParts = sys.argv[i].lower().split('=')
             if argumentParts[0] == "size":
                 fontSize = int(argumentParts[1])
             elif argumentParts[0] == "font":
@@ -48,21 +49,36 @@ if __name__ == "__main__":
                 path = argumentParts[1]
                 defaultPath = False
 
-        if not asText:
+        if asText:
+            article = sys.argv[1].split('\\n')
+        else:
             file = open(sys.argv[1], "rt")
             article = file.read().split('\n')
             file.close()
             if defaultPath:
                 path = sys.argv[1].split('.')[0]+".png"
-        else:
-            article = sys.argv[1].split('\\n')
 
         if fontFile.lower() == "default":
             font = ImageFont.load_default()
         else:
             font = ImageFont.truetype("./fonts/"+fontFile, fontSize)
 
-        image = tti(article, font, fontSize, transparency)
-        image.save(path)
+        if sys.argv[1].split('.')[-1] == "json" and not asText:
+            jsonData = {}
+            file = open(sys.argv[1], "rt")
+            jsonData = json.loads(file.read())
+            file.close()
+
+            articles = jsonData["frames"]
+            for i in range(len(jsonData["frames"])):
+                articles[i] = tti(articles[i].split('\n'), font, fontSize, transparency)
+
+            path = path.split('.')[0] + ".gif"
+            articles[0].save(path, save_all=True, append_images=articles[1:], duration=jsonData["interval"], loop = 0)
+
+        else:
+            image = tti(article, font, fontSize, transparency)
+            image.save(path)
+
         if showImage:
-            image.show()
+            os.system("start " + path)

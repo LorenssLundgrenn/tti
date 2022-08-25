@@ -12,3 +12,12 @@ optional (no specific arg order beyond first arg):
     size=<int> - set font size
     font=<string> - set font
     path=<string> - set output image path
+
+special behaviour:
+    if arg1 is a json file, it will create an animated image
+    as long as the json file provides the appropriate data.
+    required json format:
+        {
+            "data" = <string[]>,
+            "interval" = <int> //duration BETWEEN frames in seconds
+        }
